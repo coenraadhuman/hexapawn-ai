@@ -9,7 +9,9 @@ class State:
     def __init__(self):
         self.arr = [[self.playerOneSymbol, self.playerOneSymbol, self.playerOneSymbol], [" ", " ", " "], [self.playerTwoSymbol, self.playerTwoSymbol, self.playerTwoSymbol]]
         self.newGame = True
+        self.previousState = []
         self.nextStates = []
+        self.notFirstState = False
         self.points = 50
         self.name = self.playerOneSymbol + self.playerOneSymbol + self.playerOneSymbol + " " + " " + " " + self.playerTwoSymbol + self.playerTwoSymbol + self.playerTwoSymbol
         
@@ -36,6 +38,8 @@ class State:
         state.newGame = self.newGame
         state.nextStates = self.nextStates
         state.name = self.name
+        state.previousState = self
+        state.notFirstState = True
         return state
         
     def prettyPrint(self):
@@ -57,6 +61,7 @@ class Decision:
 class Player:
     def __init__(self, type):
         self.isPlayerOne = type
+        self.decisionsMade = []
         
     def move(self, state):
         # check if all my pawns are taken.
@@ -64,9 +69,13 @@ class Player:
             print()
             if self.isPlayerOne:
                 print("Player one does not have any pawns left. Player two wins!")
+                playerOne.reducePoints()
+                playerTwo.increasePoints()
             else:
                 print("Player two does not have any pawns left. Player one wins!")
-            return State()
+                playerOne.increasePoints()
+                playerTwo.reducePoints()
+            return self.getFirstState(state)
         else:
             # check if state is stored on storage.
             
@@ -96,13 +105,19 @@ class Player:
             for z in decisions:
                 if z.start <= randomValue:
                     if z.end >= randomValue: 
+                        self.decisionsMade.append(z.state)
                         return z.state
             # no state is found, thus can't make a move and opponent wins.
             if self.isPlayerOne:
                 print("Player one can't make a move. Player two wins!")
+                playerOne.reducePoints()
+                playerTwo.increasePoints()
             else:
                 print("Player two can't make a move. Player one wins!")
-            return State()
+                playerOne.increasePoints()
+                playerTwo.reducePoints()
+            state.newGame = True
+            return self.getFirstState(state)
 
     def checkPawns(self, state):
         lost = True
@@ -115,6 +130,31 @@ class Player:
                     if col == state.playerTwoSymbol:
                         lost = False
         return lost
+        
+    def getFirstState(self, state):
+        x = state
+        while x.notFirstState:
+            x = x.previousState
+        return x
+        
+    def reducePoints(self):
+        if self.isPlayerOne:
+            print("Decreasing player one game moves' points.")
+        else:
+            print("Decreasing player two game moves' points.")
+        for x in self.decisionsMade:
+            if (x.points - 5) > 0:
+                x.points = x.points - 5
+            else:
+                x.points = 0
+                
+    def increasePoints(self):
+        if self.isPlayerOne:
+            print("Increasing player one game moves' points.")
+        else:
+            print("Increasing player two game moves' points.")
+        for x in self.decisionsMade:
+            x.points = x.points + 5
     
     def generateNextStates(self, state):
         newStates = []
@@ -202,58 +242,67 @@ board = State()
 playerOne = Player(True)
 playerTwo = Player(False)
 
-# while loop till game is finished.
-print("-- Game has started --")
-print()
+# play 10 games.
 
-continueGame = True
-playerOneToMove = True
-currentState = 0
+for x in range(11):
+    # while loop till game is finished.
+    print("-- Game has started --")
+    print()
 
-while continueGame:
-    # print state number.
-    # print()
-    print(Fore.CYAN + "State " + str(currentState) + ":")
-    board.prettyPrint()
-    
-    # determine which player will move.
-    if playerOneToMove:
-        print("Player one makes a move.")
-        playerOneToMove = False
-        board = playerOne.move(board)
-    else:
-        print("Player two makes a move.")
-        playerOneToMove = True
-        board = playerTwo.move(board)
+    continueGame = True
+    playerOneToMove = True
+    currentState = 0
+
+    while continueGame:
+        # print state number.
+        # print()
+        print(Fore.CYAN + "State " + str(currentState) + ":")
+        board.prettyPrint()
         
-    # end game if new board is made.
-    if board.newGame:
-        print()
+        # determine which player will move.
         if playerOneToMove:
-            print("-- Game has ended by player two --")
-        else: 
-            print("-- Game has ended by player one --")
-        continueGame = False
+            print("Player one makes a move.")
+            playerOneToMove = False
+            board = playerOne.move(board)
+        else:
+            print("Player two makes a move.")
+            playerOneToMove = True
+            board = playerTwo.move(board)
+            
+        # end game if new board is made.
+        if board.newGame:
+            print()
+            if playerOneToMove:
+                print("-- Game has ended by player two --")
+            else: 
+                print("-- Game has ended by player one --")
+            continueGame = False
+            
+        currentState = currentState + 1
         
-    currentState = currentState + 1
-    
-    # player reached other side with move!
-    for x in board.arr[0]:
-        if x == board.playerTwoSymbol:
-            print(Fore.CYAN + "State " + str(currentState) + ":")
-            board.prettyPrint()
-            print("Player two reached other side and wins! Player one loses!")
-            print()
-            print("-- Game has ended by player two --")
-            continueGame = False
-    for x in board.arr[2]:
-        if x == board.playerOneSymbol:
-            print(Fore.CYAN + "State " + str(currentState) + ":")
-            board.prettyPrint()
-            print("Player one reached other side and wins! Player two loses!")
-            print()
-            print("-- Game has ended by player one --")
-            continueGame = False
+        # player reached other side with move!
+        for x in board.arr[0]:
+            if x == board.playerTwoSymbol:
+                print(Fore.CYAN + "State " + str(currentState) + ":")
+                board.prettyPrint()
+                print("Player two reached other side and wins! Player one loses!")
+                playerOne.reducePoints()
+                playerTwo.increasePoints()
+                print()
+                print("-- Game has ended by player two --")
+                board = playerTwo.getFirstState(board)
+                continueGame = False
+        for x in board.arr[2]:
+            if x == board.playerOneSymbol:
+                print(Fore.CYAN + "State " + str(currentState) + ":")
+                board.prettyPrint()
+                print("Player one reached other side and wins! Player two loses!")
+                playerOne.increasePoints()
+                playerTwo.reducePoints()
+                print()
+                print("-- Game has ended by player one --")
+                board = playerOne.getFirstState(board)
+                continueGame = False
     
     
     
