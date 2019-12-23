@@ -1,5 +1,5 @@
 import random
-from colorama import init, Fore
+from colorama import init, Fore, Style
 init(autoreset=True)
 
 class State:
@@ -69,10 +69,12 @@ class Player:
             print()
             if self.isPlayerOne:
                 print("Player one does not have any pawns left. Player two wins!")
+                print()
                 playerOne.reducePoints()
                 playerTwo.increasePoints()
             else:
                 print("Player two does not have any pawns left. Player one wins!")
+                print()
                 playerOne.increasePoints()
                 playerTwo.reducePoints()
             return self.getFirstState(state)
@@ -83,7 +85,7 @@ class Player:
             if len(state.nextStates) == 0:
                 self.generateNextStates(state)
                 print()
-                print("Generating next states for current state.")
+                print(Fore.GREEN + "Generating next states for current state.")
             # decide which state to return.
             totalPoints = 0
             decisions = []
@@ -110,13 +112,14 @@ class Player:
             # no state is found, thus can't make a move and opponent wins.
             if self.isPlayerOne:
                 print("Player one can't make a move. Player two wins!")
+                print()
                 playerOne.reducePoints()
                 playerTwo.increasePoints()
             else:
                 print("Player two can't make a move. Player one wins!")
+                print()
                 playerOne.increasePoints()
                 playerTwo.reducePoints()
-            state.newGame = True
             return self.getFirstState(state)
 
     def checkPawns(self, state):
@@ -147,6 +150,7 @@ class Player:
                 x.points = x.points - 5
             else:
                 x.points = 0
+        self.decisionsMade = []
                 
     def increasePoints(self):
         if self.isPlayerOne:
@@ -155,6 +159,7 @@ class Player:
             print("Increasing player two game moves' points.")
         for x in self.decisionsMade:
             x.points = x.points + 5
+        self.decisionsMade = []
     
     def generateNextStates(self, state):
         newStates = []
@@ -242,9 +247,13 @@ board = State()
 playerOne = Player(True)
 playerTwo = Player(False)
 
+# game wins.
+playerOneScore = 0
+playerTwoScore = 0
+
 # play 10 games.
 
-for x in range(11):
+for x in range(101):
     # while loop till game is finished.
     print("-- Game has started --")
     print()
@@ -261,11 +270,11 @@ for x in range(11):
         
         # determine which player will move.
         if playerOneToMove:
-            print("Player one makes a move.")
+            print(Fore.MAGENTA + Style.BRIGHT + "Player one makes a move.")
             playerOneToMove = False
             board = playerOne.move(board)
         else:
-            print("Player two makes a move.")
+            print(Fore.MAGENTA + Style.BRIGHT + "Player two makes a move.")
             playerOneToMove = True
             board = playerTwo.move(board)
             
@@ -274,8 +283,11 @@ for x in range(11):
             print()
             if playerOneToMove:
                 print("-- Game has ended by player two --")
+                playerOneScore = playerOneScore + 1
             else: 
                 print("-- Game has ended by player one --")
+                playerTwoScore = playerTwoScore + 1
+               
             continueGame = False
             
         currentState = currentState + 1
@@ -286,10 +298,12 @@ for x in range(11):
                 print(Fore.CYAN + "State " + str(currentState) + ":")
                 board.prettyPrint()
                 print("Player two reached other side and wins! Player one loses!")
+                print()
                 playerOne.reducePoints()
                 playerTwo.increasePoints()
                 print()
                 print("-- Game has ended by player two --")
+                playerTwoScore = playerTwoScore + 1
                 board = playerTwo.getFirstState(board)
                 continueGame = False
         for x in board.arr[2]:
@@ -297,12 +311,19 @@ for x in range(11):
                 print(Fore.CYAN + "State " + str(currentState) + ":")
                 board.prettyPrint()
                 print("Player one reached other side and wins! Player two loses!")
+                print()
                 playerOne.increasePoints()
                 playerTwo.reducePoints()
                 print()
                 print("-- Game has ended by player one --")
+                playerOneScore = playerOneScore + 1
                 board = playerOne.getFirstState(board)
                 continueGame = False
-    
+        if continueGame:
+            badLogic = True
+        else:
+            print()
+            print(Fore.RED + Style.BRIGHT + "Player one score: " + str(playerOneScore) + " and player two score: " + str(playerTwoScore))
+            print()
     
     
