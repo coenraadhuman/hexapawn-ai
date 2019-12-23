@@ -9,7 +9,7 @@ I am quite unfamiliar with Python and any improvements are welcome, was forced t
 ## Game Rules
 _Board:_
 
-![Wikipedia board illustration](https://en.wikipedia.org/wiki/File:Hexapawn.png)
+![Wikipedia board illustration](https://upload.wikimedia.org/wikipedia/commons/a/a1/Hexapawn.png)
 
 _Board in game:_
 
@@ -41,4 +41,4 @@ _Points:_
 Each player generates a random value and checks in which decision range the value falls under, afterwards this state is returned. This is based on Monte Carlo simulations.
 
 ## Conclusion
-It was a fun experiment and I learned a bit about Python 3 syntax and side note Colorama is a very cool project, do have a look! In terms of the game and the machines learning, I found it quite interesting that after a simulation with a hundred games the 'players' would still encounter 'unknown' states and that during this simulation that none of the decisions could be phased out (reach a zero value). Another interesting find was after a thousand games the general losing player would be inable to make decisions because all of their decisions lead in a bad outcome, to resolve this I had to let the player in this situation just randomly choose a decision rather than no decision.
+It was a fun experiment and I learned a bit about Python 3 syntax and side note Colorama is a very cool project, do have a look! In terms of the game and the basic machine learning, I found it quite interesting that after a simulation with a hundred games the 'players' would still encounter 'unknown' states and that during this simulation that none of the decisions could be phased out (reach a zero value). Another interesting find was after a thousand games the general losing player would be inable to make decisions because all of their decisions lead in a bad outcome, to resolve this I had to let the player in this situation just randomly choose a decision rather than no decision.
