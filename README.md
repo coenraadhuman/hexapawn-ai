@@ -1,5 +1,5 @@
-# Hexapawn-Machine_Learning
-Extremely basic illustration of machine learning, something to do on my holiday inspired by [video](https://www.youtube.com/watch?v=sw7UAZNgGg8) a friend showed me from Vsauce2 (Youtube) on [hexapawn](https://en.wikipedia.org/wiki/Hexapawn).
+# Hexapawn-AI
+Extremely basic illustration of a heuristic function in decision making during the gameplay, just something to do on my holiday inspired by [video](https://www.youtube.com/watch?v=sw7UAZNgGg8) a friend showed me from Vsauce2 (Youtube) on [hexapawn](https://en.wikipedia.org/wiki/Hexapawn).
 
 ## Codebase
 I am quite unfamiliar with Python and any improvements are welcome, was forced to use it due to internet difficulties and using another person's Windows :sob: laptop.
