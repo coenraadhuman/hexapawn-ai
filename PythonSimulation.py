@@ -1,4 +1,5 @@
 import random
+import time
 from colorama import init, Fore, Style
 init(autoreset=True)
 
@@ -93,14 +94,34 @@ class Player:
                 decisions.append(Decision(x))
                 totalPoints = totalPoints + x.points                
             print()
+            # calculate ranges.
+            isAllZero = True
             for y in range(len(decisions)):
-                print("-> Decision " + str(y) + ": " + str((decisions[y].state.points / totalPoints) * 100) + "% to be chosen.")
-                decisions[y].state.decisionPrettyPrint()
-                if y == 0:
-                    decisions[y].end = int((decisions[y].state.points / totalPoints) * 100)
+                if decisions[y].state.points != 0:
+                    print("-> Decision " + str(y) + ": " + str((decisions[y].state.points / totalPoints) * 100) + "% to be chosen.")
+                    decisions[y].state.decisionPrettyPrint()
+                    if y == 0:
+                        decisions[y].end = int((decisions[y].state.points / totalPoints) * 100)
+                    else:
+                        decisions[y].start = decisions[y - 1].end + 1
+                        decisions[y].end = decisions[y].start + int((decisions[y].state.points / totalPoints) * 100)
+                    isAllZero = False
                 else:
-                    decisions[y].start = decisions[y - 1].end + 1
-                    decisions[y].end = decisions[y].start + int((decisions[y].state.points / totalPoints) * 100)
+                    print("-> Decision " + str(y) + ": " + str(decisions[y].state.points) + "% to be chosen.")
+                    decisions[y].state.decisionPrettyPrint()
+            # make evenly distributed ranges.
+            if isAllZero:
+                print("Random decisions will be made.")
+                print()
+                for z in range(len(decisions)):
+                    print("-> New random decision " + str(z) + ": " + str(100 / len(decisions)) + "% to be chosen.")
+                    if z == 0:
+                        decisions[z].start = 0
+                        decisions[z].end = (100 / len(decisions))
+                    else:
+                        decisions[z].start = decisions[z - 1].end + 1
+                        decisions[z].end = decisions[z].start + (100 / len(decisions))
+                print()
             # generate random value.
             randomValue = random.randrange(0,101,1)
             # return state that value falls under.
@@ -251,9 +272,14 @@ playerTwo = Player(False)
 playerOneScore = 0
 playerTwoScore = 0
 
-# play 10 games.
+# ask amount of games to play.
+games = int(input("Please enter number of games that should be played, using an interger value: "))
+print()
+print()
 
-for x in range(101):
+# measure simulation execution time.
+start = time.time()
+for x in range(games):
     # while loop till game is finished.
     print("-- Game has started --")
     print()
@@ -325,5 +351,5 @@ for x in range(101):
             print()
             print(Fore.RED + Style.BRIGHT + "Player one score: " + str(playerOneScore) + " and player two score: " + str(playerTwoScore))
             print()
-    
-    
+end = time.time()
+print(Fore.BLUE + Style.BRIGHT + "Simulation execution time: " + str(end - start) + " seconds.")
