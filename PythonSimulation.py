@@ -258,7 +258,7 @@ class Player:
         state.nextStates = newStates
         
 # introduction
-print("Hexapawn Machine Learning")
+print("Hexapawn AI")
 print()
 
 # create board.
