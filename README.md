@@ -1,4 +1,6 @@
-# Hexapawn-AI
+[![Image of github-profile-views-counter](https://github.com/coenraadhuman/github-profile-views-counter/blob/master/svg/229612747/badge.svg)](https://github.com/coenraadhuman/github-profile-views-counter/blob/master/readme/229612747/week.md)
+
+# hexapawn-ai
 Extremely basic illustration of a heuristic function in decision making during the gameplay, just something to do on my holiday inspired by [video](https://www.youtube.com/watch?v=sw7UAZNgGg8) a friend showed me from Vsauce2 (Youtube) on [hexapawn](https://en.wikipedia.org/wiki/Hexapawn).
 
 ## Codebase
